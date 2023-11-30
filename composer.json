@@ -1,0 +1,51 @@
+{
+  "name": "zhanguangcheng/linkerman",
+  "type": "library",
+  "keywords": [
+    "php",
+    "linkerman",
+    "workerman"
+  ],
+  "description": "Linkerman is a library that utilizes Workerman to accelerate PHP frameworks.",
+  "homepage": "https://github.com/zhanguangcheng/linkerman",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "zhanguangcheng",
+      "email": "14712905@qq.com",
+      "homepage": "https://github.com/zhanguangcheng",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/zhanguangcheng/linkerman/issues",
+    "source": "https://github.com/zhanguangcheng/linkerman"
+  },
+  "suggest": {
+    "ext-event": "For better performance. "
+  },
+  "require": {
+    "php": "^8.0",
+    "workerman/workerman": "^4.1"
+  },
+  "require-dev": {
+    "ext-curl": "*",
+    "pestphp/pest": "^2.25",
+    "guzzlehttp/guzzle": "^7.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "Linkerman\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
