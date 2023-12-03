@@ -4,10 +4,19 @@
 
 Linkerman is a library that utilizes Workerman to accelerate PHP frameworks.
 
+If your app or fw use a Front Controller, 99% that will work. Requires minimun PHP 8.0.
+
+
 ## How it works
 
 1. When the request arrives, the Workerman's Request object is called to register the hyperglobal variables: `$_GET` `$_POST` `$_COOKIE` `$_FILES` `$_SERVER` `$_REQUEST`
 2. Rewrite the built-in PHP functions such as`header()` `setcookie()` `session_*`, etc., and convert them into Workerman's Response objects
+
+
+## Example of framework launch template
+* [laravel-workerman](https://github.com/zhanguangcheng/laravel-workerman)
+* [thinkphp6-workerman](https://github.com/zhanguangcheng/thinkphp6-workerman)
+* [yii2-workerman](https://github.com/zhanguangcheng/yii2-workerman)
 
 
 ## Installation
