@@ -297,6 +297,7 @@ function session_write_close(): bool
         $session->setData($_SESSION);
         $session->save();
     }
+    Http::$sessionIsStarted = false;
     return true;
 }
 
@@ -331,6 +332,23 @@ function session_unset(): bool
 {
     if (\session_status() === \PHP_SESSION_ACTIVE) {
         $_SESSION = [];
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Destroy session
+ *
+ * @return bool
+ */
+function session_destroy(): bool
+{
+    if (\session_status() === \PHP_SESSION_ACTIVE) {
+        $request = Http::$request;
+        $request->session->flush();
+        $request->session->save();
+        Http::$sessionIsStarted = false;
         return true;
     }
     return false;

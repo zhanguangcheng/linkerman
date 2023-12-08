@@ -13,7 +13,7 @@ use Exception;
 
 class Linkerman
 {
-    const VERSION = '0.1.0';
+    const VERSION = '0.1.1';
 
     const REWRITE_FUNCTIONS = [
         'set_time_limit',
@@ -33,6 +33,7 @@ class Linkerman
         'session_write_close',
         'session_regenerate_id',
         'session_unset',
+        'session_destroy',
     ];
 
     public static function init(): void

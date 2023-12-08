@@ -115,6 +115,16 @@ function sessions(): string
                 return json_encode($_SESSION);
             }
         })(),
+        'session-destroy' => (static function () {
+            session_start();
+            $_SESSION['name'] = 'linkerman';
+            $result[] = session_destroy();
+            $result[] = session_status();
+            $file = session_save_path() . '/session_' . session_id();
+            $result[] = empty($_SESSION);
+            $result[] = file_exists($file);
+            return json_encode($result);
+        })(),
     };
 }
 

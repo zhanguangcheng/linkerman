@@ -44,7 +44,6 @@ class Http extends \Workerman\Protocols\Http
     {
         if (static::$sessionIsStarted) {
             \session_write_close();
-            static::$sessionIsStarted = false;
         }
         if ($response instanceof \Workerman\Protocols\Http\Response) {
             return parent::encode($response, $connection);

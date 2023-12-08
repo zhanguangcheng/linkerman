@@ -63,6 +63,13 @@ test("tests session_unset", function() {
     expect($response->getBody()->getContents())->toBe('[]');
 });
 
+test("tests session_destroy", function() {
+    $response = HttpClient()->get('/sessions', [
+        'query' => ['type' => 'session-destroy']
+    ]);
+    expect($response->getBody()->getContents())->toBeJson()->json()->toBe([true, 0, false, false]);
+});
+
 test("tests session_name", function() {
     $response = HttpClient()->get('/sessions', [
         'query' => ['type' => 'session-name']
