@@ -355,6 +355,45 @@ function session_destroy(): bool
 }
 
 /**
+ * Check the file was uploaded via HTTP POST
+ *
+ * @param string $filename
+ * @return bool
+ */
+function is_uploaded_file(string $filename): bool
+{
+    $files = Http::$request->file();
+    foreach ($files as $file) {
+        if (isset($file['error']) && $file['error'] === 0
+            && isset($file['tmp_name']) && $file['tmp_name'] === $filename
+            && \is_file($file['tmp_name'])
+        ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Moves an uploaded file to a new location
+ *
+ * @param string $from
+ * @param string $to
+ * @return bool
+ */
+function move_uploaded_file(string $from, string $to): bool
+{
+    if (!\is_uploaded_file($from)) {
+        return false;
+    }
+    $path = \pathinfo($to, PATHINFO_DIRNAME);
+    if (!\is_writeable($path)) {
+        return false;
+    }
+    return \rename($from, $to);
+}
+
+/**
  * Replace the exit() call with exit_exception() to avoid program exit
  * If status is a string, function exit() will print the status just before exiting.
  *

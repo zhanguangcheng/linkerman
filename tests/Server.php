@@ -32,6 +32,8 @@ $worker->onMessage = static function (TcpConnection $connection, Request $reques
         '/server' => $_SERVER[$_GET['name']],
         '/func-header' => func_header(),
         '/sessions' => sessions(),
+        '/is_uploaded_file' => func_is_uploaded_file(),
+        '/move_uploaded_file' => func_move_uploaded_file(),
         default => (static function (): string {
             header('HTTP/1.1 404 Not Found');
             return '404 Not Found';
@@ -171,4 +173,24 @@ function func_header(): string
         })(),
     };
     return $response;
+}
+
+function func_is_uploaded_file(): string
+{
+    $result[] = isset($_FILES['file_test']['tmp_name']) && is_uploaded_file($_FILES['file_test']['tmp_name']);
+    $result[] = is_uploaded_file('/etc/passwd');
+    return json_encode($result);
+}
+
+function func_move_uploaded_file(): string
+{
+    $result = [];
+    if (isset($_FILES['file_test']['tmp_name'])) {
+        $result[] = move_uploaded_file($_FILES['file_test']['tmp_name'], "/tmp/test.file");
+        $result[] = is_uploaded_file($_FILES['file_test']['tmp_name']);
+        $result[] = file_exists($_FILES['file_test']['tmp_name']);
+        $result[] = file_exists("/tmp/test.file");
+        unlink("/tmp/test.file");
+    }
+    return json_encode($result);
 }

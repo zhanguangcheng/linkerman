@@ -70,3 +70,34 @@ it('get POST Multipart with files', function (array $data) {
         ->json()
         ->toBe($data);
 })->with('send data');
+
+
+it('tests is_uploaded_file', function() {
+    $response = HttpClient()->post('/is_uploaded_file', [
+        'multipart' => [
+            [
+                'name' => 'file_test',
+                'contents' => Psr7\Utils::tryFopen(__DIR__ . '/Stub/test.json', 'r'),
+            ],
+        ],
+    ]);
+    expect($response->getBody()->getContents())
+        ->toBeJson()
+        ->json()
+        ->toBe([true, false]);
+});
+
+it('tests move_uploaded_file', function() {
+    $response = HttpClient()->post('/move_uploaded_file', [
+        'multipart' => [
+            [
+                'name' => 'file_test',
+                'contents' => Psr7\Utils::tryFopen(__DIR__ . '/Stub/test.json', 'r'),
+            ],
+        ],
+    ]);
+    expect($response->getBody()->getContents())
+        ->toBeJson()
+        ->json()
+        ->toBe([true, false, false, true]);
+});

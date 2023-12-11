@@ -30,7 +30,6 @@ composer require zhanguangcheng/linkerman
 ## Requirements
 
 - PHP >= 8.0
-- Workerman/Workerman ^4.1
 
 ## Usage
 
@@ -60,7 +59,7 @@ $worker->onMessage = static function (TcpConnection $connection, Request $reques
 Worker::runAll();
 ```
 
-The Yii 2 framework's start.php looks like this
+The Yii2 framework's start.php looks like this
 ```php
 <?php
 
@@ -88,30 +87,36 @@ function run($request): string
 }
 ```
 
-php.ini
+Add to php.ini file
 ```ini
-;error_reporting = E_ALL & ~E_NOTICE & ~E_STRICT & ~E_DEPRECATED
-opcache.enable=1
-opcache.enable_cli=1
-opcache.validate_timestamps=0
-opcache.save_comments=0
-opcache.enable_file_override=1
-opcache.huge_code_pages=1
-
-mysqlnd.collect_statistics = Off
-
-memory_limit = 512M
-
-opcache.jit_buffer_size=128M
-opcache.jit=tracing
-
-disable_functions=set_time_limit,header,header_remove,headers_sent,headers_list,http_response_code,setcookie,setrawcookie,session_start,session_id,session_name,session_save_path,session_status,session_write_close,session_regenerate_id,session_unset,session_destroy
+disable_functions=set_time_limit,header,header_remove,headers_sent,headers_list,http_response_code,setcookie,setrawcookie,session_start,session_id,session_name,session_save_path,session_status,session_write_close,session_regenerate_id,session_unset,session_destroy,is_uploaded_file,move_uploaded_file
 ```
 
 Start the service
 ```bash
-php -c php.ini server.php start
+php server.php start
 ```
+
+## Precautions
+
+### Functions or statements that are known to be incompatible
+> https://www.workerman.net/doc/workerman/appendices/unavailable-functions.html
+
+* `pcntl_fork()`
+  * Solution: Set the number of processes in advance
+* `exit()` `die()`
+  * Solution: Replace with function `exit_exception()`
+* `file_get_contents("php://input")`
+  * Solution: Replace with function `request_raw_body()`
+
+### How to access the Connection Object and Request Object of Workerman
+```php
+// Workerman Connection Object
+$GLOBALS['WORKERMAN_CONNECTION'];
+
+// Workerman Request Object
+$GLOBALS['WORKERMAN_REQUEST'];
+````
 
 ## License
 
