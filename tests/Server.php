@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Linkerman\Http;
 use Linkerman\Linkerman;
 use Workerman\Connection\TcpConnection;
 use Workerman\Protocols\Http\Request;
@@ -34,6 +35,7 @@ $worker->onMessage = static function (TcpConnection $connection, Request $reques
         '/sessions' => sessions(),
         '/is_uploaded_file' => func_is_uploaded_file(),
         '/move_uploaded_file' => func_move_uploaded_file(),
+        '/register_shutdown_function' => func_register_shutdown_function(),
         default => (static function (): string {
             header('HTTP/1.1 404 Not Found');
             return '404 Not Found';
@@ -193,4 +195,12 @@ function func_move_uploaded_file(): string
         unlink("/tmp/test.file");
     }
     return json_encode($result);
+}
+
+function func_register_shutdown_function(): string
+{
+    register_shutdown_function(static function ($name) {
+        header("x-shutdown: $name");
+    }, 'linkerman');
+    return (string)count(Http::$shutdownCallbacks);
 }

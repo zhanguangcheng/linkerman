@@ -14,6 +14,43 @@ use Linkerman\Request;
 use Workerman\Protocols\Http\Session;
 
 /**
+ * Register a function for execution on shutdown
+ * Since the resident memory runs, the registered callback function is not actually executed, which may lead to memory leaks
+ *
+ * @param callable $callback
+ * @param mixed ...$args
+ * @return void
+ */
+function register_shutdown_function(callable $callback, mixed ...$args): void
+{
+    if (!(\is_array($callback) && $callback[0] === '\\Workerman\\Worker')) {
+        // Prevent memory leaks caused by callback functions that are not executed normally
+        if (\count(Http::$shutdownCallbacks) < 100) {
+            Http::$shutdownCallbacks[] = [$callback, $args];
+        }
+    }
+}
+
+/**
+ * Call the registered shutdown functions on the end of the request
+ *
+ * @return void
+ */
+function call_shutdown_function(): void
+{
+    while (true) {
+        $call = \array_shift(Http::$shutdownCallbacks);
+        if (!$call) {
+            break;
+        }
+        try {
+            \call_user_func_array($call[0], $call[1] ?? []);
+        } catch (\Exception|\Throwable) {
+        }
+    }
+}
+
+/**
  * Set the maximum execution time
  *
  * @param int $seconds

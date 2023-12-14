@@ -13,9 +13,10 @@ use Exception;
 
 class Linkerman
 {
-    const VERSION = '0.2.0';
+    const VERSION = '0.2.1';
 
     const REWRITE_FUNCTIONS = [
+        'register_shutdown_function',
         'set_time_limit',
         'header',
         'header_remove',

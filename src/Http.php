@@ -19,6 +19,7 @@ class Http extends \Workerman\Protocols\Http
     public static ?Response $response = null;
     public static bool $sessionIsStarted = false;
     public static ?string $sessionSavePath = null;
+    public static array $shutdownCallbacks = [];
 
     /**
      * @param $recv_buffer
@@ -48,6 +49,7 @@ class Http extends \Workerman\Protocols\Http
         if ($response instanceof \Workerman\Protocols\Http\Response) {
             return parent::encode($response, $connection);
         }
+        \call_shutdown_function();
         static::$response->withBody((string)$response);
         return parent::encode(static::$response, $connection);
     }
