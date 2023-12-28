@@ -88,6 +88,8 @@ class Http extends \Workerman\Protocols\Http
             'REQUEST_URI' => $request->uri(),
             'SCRIPT_NAME' => '/index.php',
             'PHP_SELF' => '/index.php',
+            'REQUEST_TIME' => time(),
+            'REQUEST_TIME_FLOAT' => microtime(true),
         ];
         if (null !== ($contentType = $request->header('content-type'))) {
             $_SERVER['CONTENT_TYPE'] = $contentType;
@@ -97,6 +99,9 @@ class Http extends \Workerman\Protocols\Http
         }
         foreach ($request->header() as $key => $value) {
             $_SERVER['HTTP_' . \strtoupper(\str_replace('-', '_', $key))] = $value;
+        }
+        if (isset($_SERVER['HTTP_HTTPS'])) {
+            $_SERVER['HTTPS'] = $_SERVER['HTTP_HTTPS'];
         }
     }
 }

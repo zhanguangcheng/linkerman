@@ -6,6 +6,8 @@
  * @author  zhanguangcheng<14712905@qq.com>
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
  * @noinspection PhpRedeclarationStdlibFunctionInspection
+ * @noinspection PhpUnusedParameterInspection
+ * @noinspection PhpUnused
  */
 
 use Linkerman\ExitException;
@@ -21,7 +23,7 @@ use Workerman\Protocols\Http\Session;
  * @param mixed ...$args
  * @return void
  */
-function register_shutdown_function(callable $callback, mixed ...$args): void
+function register_shutdown_function_user(callable $callback, mixed ...$args): void
 {
     if (!(\is_array($callback) && $callback[0] === '\\Workerman\\Worker')) {
         // Prevent memory leaks caused by callback functions that are not executed normally

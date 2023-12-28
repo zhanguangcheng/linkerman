@@ -89,7 +89,7 @@ function run($request): string
 
 Add to php.ini file
 ```ini
-disable_functions=register_shutdown_function,set_time_limit,header,header_remove,headers_sent,headers_list,http_response_code,setcookie,setrawcookie,session_start,session_id,session_name,session_save_path,session_status,session_write_close,session_regenerate_id,session_unset,session_destroy,is_uploaded_file,move_uploaded_file
+disable_functions=set_time_limit,header,header_remove,headers_sent,headers_list,http_response_code,setcookie,setrawcookie,session_start,session_id,session_name,session_save_path,session_status,session_write_close,session_regenerate_id,session_unset,session_destroy,is_uploaded_file,move_uploaded_file
 ```
 
 Start the service
@@ -108,6 +108,9 @@ php server.php start
   * Solution: Replace with function `exit_exception()`
 * `file_get_contents("php://input")`
   * Solution: Replace with function `request_raw_body()`
+* `register_shutdown_function()`
+  * Why: Since the resident memory runs, the registered callback function is not actually executed, which may lead to memory leaks
+  * Solution: Replace with function `register_shutdown_function_user()
 
 ### How to access the Connection Object and Request Object of Workerman
 ```php

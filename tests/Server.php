@@ -188,18 +188,19 @@ function func_move_uploaded_file(): string
 {
     $result = [];
     if (isset($_FILES['file_test']['tmp_name'])) {
-        $result[] = move_uploaded_file($_FILES['file_test']['tmp_name'], "/tmp/test.file");
+        $tmpfile = tempnam(sys_get_temp_dir(), 'linkerman');
+        $result[] = move_uploaded_file($_FILES['file_test']['tmp_name'], $tmpfile);
         $result[] = is_uploaded_file($_FILES['file_test']['tmp_name']);
         $result[] = file_exists($_FILES['file_test']['tmp_name']);
-        $result[] = file_exists("/tmp/test.file");
-        unlink("/tmp/test.file");
+        $result[] = file_exists($tmpfile);
+        unlink($tmpfile);
     }
     return json_encode($result);
 }
 
 function func_register_shutdown_function(): string
 {
-    register_shutdown_function(static function ($name) {
+    register_shutdown_function_user(static function ($name) {
         header("x-shutdown: $name");
     }, 'linkerman');
     return (string)count(Http::$shutdownCallbacks);
