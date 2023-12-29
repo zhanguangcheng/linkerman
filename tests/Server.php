@@ -129,6 +129,22 @@ function sessions(): string
             $result[] = file_exists($file);
             return json_encode($result);
         })(),
+        'session-get-cookie-params' => (static function () {
+            return json_encode(session_get_cookie_params());
+        })(),
+        'session-set-cookie-params' => (static function () {
+            return (string)session_set_cookie_params(3600, '/', '', false, true);
+        })(),
+        'session-set-cookie-params-array' => (static function () {
+            return (string)session_set_cookie_params([
+                'lifetime' => 1800,
+                'path' => '/',
+                'domain' => '',
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => '',
+            ]);
+        })(),
     };
 }
 

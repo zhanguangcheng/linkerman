@@ -394,6 +394,71 @@ function session_destroy(): bool
 }
 
 /**
+ * Set the session cookie parameters
+ *
+ * @param int|array $lifetime_or_options
+ * @param string $path
+ * @param string $domain
+ * @param bool $secure
+ * @param bool $httponly
+ * @return bool
+ */
+function session_set_cookie_params(
+    int|array $lifetime_or_options,
+    string    $path = "",
+    string    $domain = "",
+    bool      $secure = false,
+    bool      $httponly = false
+): bool
+{
+    if (\is_array($lifetime_or_options)) {
+        $options = $lifetime_or_options;
+        $lifetime = $options['lifetime'] ?? Session::$cookieLifetime;
+        $path = $options['path'] ?? Session::$cookiePath;
+        $domain = $options['domain'] ?? "";
+        $secure = $options['secure'] ?? Session::$secure;
+        $httponly = $options['httponly'] ?? Session::$httpOnly;
+        $sameSite = $options['samesite'] ?? Session::$sameSite;
+        Session::$sameSite = $sameSite;
+    } else {
+        $lifetime = $lifetime_or_options;
+    }
+    Session::$cookieLifetime = $lifetime;
+    Session::$cookiePath = $path;
+    Session::$domain = $domain;
+    Session::$secure = $secure;
+    Session::$httpOnly = $httponly;
+    return true;
+}
+
+/**
+ * Get the session cookie parameters
+ *
+ * @return array
+ */
+function session_get_cookie_params(): array
+{
+    static $cached = false;
+    if (!$cached) {
+        $cached = true;
+        Session::$cookieLifetime = (int)\ini_get('session.cookie_lifetime');
+        Session::$cookiePath = \ini_get('session.cookie_path');
+        Session::$domain = \ini_get('session.cookie_domain');
+        Session::$secure = (bool)\ini_get('session.cookie_secure');
+        Session::$httpOnly = (bool)\ini_get('session.cookie_httponly');
+        Session::$sameSite = \ini_get('session.cookie_samesite');
+    }
+    return [
+        'lifetime' => Session::$cookieLifetime,
+        'path' => Session::$cookiePath,
+        'domain' => Session::$domain,
+        'secure' => Session::$secure,
+        'httponly' => Session::$httpOnly,
+        'samesite' => Session::$sameSite,
+    ];
+}
+
+/**
  * Check the file was uploaded via HTTP POST
  *
  * @param string $filename

@@ -46,10 +46,10 @@ class Http extends \Workerman\Protocols\Http
         if (static::$sessionIsStarted) {
             \session_write_close();
         }
+        \call_shutdown_function();
         if ($response instanceof \Workerman\Protocols\Http\Response) {
             return parent::encode($response, $connection);
         }
-        \call_shutdown_function();
         static::$response->withBody((string)$response);
         return parent::encode(static::$response, $connection);
     }

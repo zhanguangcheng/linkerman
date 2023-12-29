@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnhandledExceptionInspection */
 
 use GuzzleHttp\Cookie\CookieJar;
 
@@ -68,6 +68,53 @@ test("tests session_destroy", function() {
         'query' => ['type' => 'session-destroy']
     ]);
     expect($response->getBody()->getContents())->toBeJson()->json()->toBe([true, 0, false, false]);
+});
+
+test("tests session_get_cookie_params", function() {
+    $response = HttpClient()->get('/sessions', [
+        'query' => ['type' => 'session-get-cookie-params']
+    ]);
+    expect($response->getBody()->getContents())->toBeJson()->json()->toBe([
+        'lifetime' => 0,
+        'path' => '/',
+        'domain' => '',
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+});
+
+test("tests session_set_cookie_params", function() {
+    HttpClient()->get('/sessions', [
+        'query' => ['type' => 'session-set-cookie-params']
+    ]);
+
+    $response = HttpClient()->get('/sessions', [
+        'query' => ['type' => 'session-get-cookie-params']
+    ]);
+    expect($response->getBody()->getContents())->toBeJson()->json()->toBe([
+        'lifetime' => 3600,
+        'path' => '/',
+        'domain' => '',
+        'secure' => false,
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    HttpClient()->get('/sessions', [
+        'query' => ['type' => 'session-set-cookie-params-array']
+    ]);
+    $response = HttpClient()->get('/sessions', [
+        'query' => ['type' => 'session-get-cookie-params']
+    ]);
+    expect($response->getBody()->getContents())->toBeJson()->json()->toBe([
+        'lifetime' => 1800,
+        'path' => '/',
+        'domain' => '',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => '',
+    ]);
 });
 
 test("tests session_name", function() {
