@@ -13,7 +13,7 @@ use Exception;
 
 class Linkerman
 {
-    const VERSION = '0.3.0';
+    const VERSION = '0.3.1';
 
     const REWRITE_FUNCTIONS = [
         'set_time_limit',
@@ -43,11 +43,16 @@ class Linkerman
 
     public static function init(): void
     {
+        static $inited = false;
+        if ($inited) {
+            return;
+        }
         try {
             static::checkEnv();
             require_once __DIR__ . '/Functions.php';
             \class_alias(Http::class, \Protocols\Http::class);
             \fwrite(STDOUT, "Linkerman v" . static::VERSION . " OK\n");
+            $inited = true;
         } catch (Exception $e) {
             \fwrite(STDERR, "Linkerman v" . static::VERSION . " Error:\n" . $e->getMessage());
             exit(1);
