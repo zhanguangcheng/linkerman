@@ -2,7 +2,9 @@
 
 namespace Linkerman;
 
-class ExitException extends \Exception
+use Exception;
+
+class ExitException extends Exception
 {
 
 }

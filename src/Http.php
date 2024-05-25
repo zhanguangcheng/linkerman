@@ -5,6 +5,7 @@
  *
  * @author  zhanguangcheng<14712905@qq.com>
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
+ * @noinspection PhpFullyQualifiedNameUsageInspection
  */
 
 namespace Linkerman;
@@ -20,6 +21,7 @@ class Http extends \Workerman\Protocols\Http
     public static bool $sessionIsStarted = false;
     public static ?string $sessionSavePath = null;
     public static array $shutdownCallbacks = [];
+    public static bool $autoCleanAtEnd = true;
 
     /**
      * @param $recv_buffer
@@ -33,6 +35,8 @@ class Http extends \Workerman\Protocols\Http
         static::$request = $request;
         static::$response = new Response();
         static::registerGlobalVariables($connection);
+        static::$shutdownCallbacks = [];
+        static::$sessionIsStarted = false;
         return $request;
     }
 
@@ -43,10 +47,12 @@ class Http extends \Workerman\Protocols\Http
      */
     public static function encode($response, TcpConnection $connection): string
     {
-        if (static::$sessionIsStarted) {
-            \session_write_close();
+        if (static::$autoCleanAtEnd) {
+            if (static::$sessionIsStarted) {
+                \session_write_close();
+            }
+            \call_shutdown_function();
         }
-        \call_shutdown_function();
         if ($response instanceof \Workerman\Protocols\Http\Response) {
             return parent::encode($response, $connection);
         }
@@ -58,6 +64,7 @@ class Http extends \Workerman\Protocols\Http
     {
         defined('APP_PATH') or define('APP_PATH', dirname(__DIR__, 4));
         $request = static::$request;
+        $_SESSION = null;
         $_GET = $request->get();
         $_POST = $request->post();
         $_REQUEST = \array_merge($_GET, $_POST);

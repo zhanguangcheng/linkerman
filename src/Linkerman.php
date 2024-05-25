@@ -5,6 +5,7 @@
  *
  * @author  zhanguangcheng<14712905@qq.com>
  * @license http://www.opensource.org/licenses/mit-license.php MIT License
+ * @noinspection PhpFullyQualifiedNameUsageInspection
  */
 
 namespace Linkerman;
@@ -13,7 +14,7 @@ use Exception;
 
 class Linkerman
 {
-    const VERSION = '0.3.1';
+    const VERSION = '0.3.2';
 
     const REWRITE_FUNCTIONS = [
         'set_time_limit',

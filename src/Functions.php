@@ -8,6 +8,7 @@
  * @noinspection PhpRedeclarationStdlibFunctionInspection
  * @noinspection PhpUnusedParameterInspection
  * @noinspection PhpUnused
+ * @noinspection PhpUnnecessaryFullyQualifiedNameInspection
  */
 
 use Linkerman\ExitException;
@@ -309,11 +310,12 @@ function session_start(array $options = []): bool
     if (Http::$sessionIsStarted) {
         return true;
     }
+    Http::$sessionIsStarted = true;
     $session = Http::$request->session();
+    $_SESSION = null;
     if (!$session) {
         return false;
     }
-    Http::$sessionIsStarted = true;
     $_SESSION = $session->all();
     return true;
 }
@@ -328,6 +330,7 @@ function session_write_close(): bool
     if (!Http::$sessionIsStarted) {
         return false;
     }
+    Http::$sessionIsStarted = false;
     $session = Http::$request->session();
     if (!$session) {
         return false;
@@ -336,7 +339,6 @@ function session_write_close(): bool
         $session->setData($_SESSION);
         $session->save();
     }
-    Http::$sessionIsStarted = false;
     return true;
 }
 
